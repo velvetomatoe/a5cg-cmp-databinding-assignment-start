@@ -6,9 +6,10 @@ import { Component, OnInit, EventEmitter, Output } from '@angular/core';
   styleUrls: ['./game-control.component.css']
 })
 export class GameControlComponent implements OnInit {
-  gameCount = 0;
+  @Output() incrementCount = new EventEmitter<number>();
 
-  @Output() incrementCount = new EventEmitter<{count: number}>();
+  interval;
+  gameCount = 0;
 
   constructor() { }
 
@@ -16,20 +17,13 @@ export class GameControlComponent implements OnInit {
   }
 
   onStartGame() {
-    this.gameCount = setInterval(this.incrementGameCount, 1000);
-  }
-
-  incrementGameCount() {
-    console.log(this.gameCount);
-    this.gameCount++;
-
-    this.incrementCount.emit({
-      count: this.gameCount
-    });
+    this.interval = setInterval(() => {
+      this.incrementCount.emit(this.gameCount + 1);
+      this.gameCount++;
+    }, 1000);
   }
 
   onStopGame() {
-    clearInterval(this.gameCount);
+    clearInterval(this.interval);
   }
-
 }
